@@ -35,7 +35,8 @@ module CarrierWave
       with_trancoding_callbacks do
         transcoder = CarrierWave::Video::FfmpegTheora.new(current_path, tmp_path)
         transcoder.run(@options.logger(model))
-        File.rename tmp_path, current_path
+        #File.rename tmp_path, current_path
+        `qt-faststart #{tmp_path} #{current_path}`
       end
     end
 
@@ -67,7 +68,8 @@ module CarrierWave
         else
           file.transcode(tmp_path, @options.format_params, @options.encoder_options)
         end
-        File.rename tmp_path, current_path
+        #File.rename tmp_path, current_path
+        `qt-faststart #{tmp_path} #{current_path}`
       end
     end
 
