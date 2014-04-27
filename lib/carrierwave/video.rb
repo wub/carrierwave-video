@@ -15,37 +15,37 @@ module CarrierWave
     end
 
     module ClassMethods
-      def encode_video(target_format, options={})
+      def encode_video(target_format, options = {})
         process encode_video: [target_format, options]
       end
 
-      def encode_ogv(opts={})
+      def encode_ogv(opts = {})
         process encode_ogv: [opts]
       end
-
     end
 
     def encode_ogv(opts)
       # move upload to local cache
-      cache_stored_file! if !cached?
+      cache_stored_file! unless cached?
 
-      tmp_path  = File.join( File.dirname(current_path), "tmpfile.ogv" )
+      tmp_path = File.join(File.dirname(current_path), 'tmpfile.ogv')
       @options = CarrierWave::Video::FfmpegOptions.new('ogv', opts)
 
       with_trancoding_callbacks do
         transcoder = CarrierWave::Video::FfmpegTheora.new(current_path, tmp_path)
         transcoder.run(@options.logger(model))
-        #File.rename tmp_path, current_path
+        # File.rename tmp_path, current_path
         `qt-faststart #{tmp_path} #{current_path}`
       end
     end
 
-    def encode_video(format, opts={})
+    def encode_video(format, opts = {})
       # move upload to local cache
-      cache_stored_file! if !cached?
+      cache_stored_file! unless cached?
 
+      ::FFMPEG::Transcoder.timeout = 200
       @options = CarrierWave::Video::FfmpegOptions.new(format, opts)
-      tmp_path = File.join( File.dirname(current_path), "tmpfile.#{format}" )
+      tmp_path = File.join(File.dirname(current_path), "tmpfile.#{format}")
       file = ::FFMPEG::Movie.new(current_path)
 
       if opts[:resolution] == :same
@@ -68,12 +68,13 @@ module CarrierWave
         else
           file.transcode(tmp_path, @options.format_params, @options.encoder_options)
         end
-        #File.rename tmp_path, current_path
+        # File.rename tmp_path, current_path
         `qt-faststart #{tmp_path} #{current_path}`
       end
     end
 
     private
+
       def with_trancoding_callbacks(&block)
         callbacks = @options.callbacks
         logger = @options.logger(model)

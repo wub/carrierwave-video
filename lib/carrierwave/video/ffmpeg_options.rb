@@ -5,7 +5,7 @@ module CarrierWave
 
       def initialize(format, options)
         @format = format.to_s
-        @resolution = options[:resolution] || "640x360"
+        @resolution = options[:resolution] || '640x360'
         @custom = options[:custom]
         @callbacks = options[:callbacks] || {}
         @logger = options[:logger]
@@ -58,14 +58,14 @@ module CarrierWave
           position = @format_options[:watermark][:position].to_s || :bottom_right
           margin = @format_options[:watermark][:pixels_from_edge] || @format_options[:watermark][:margin] || 10
           positioning = case position
-                          when 'bottom_left'
-                            "#{margin}:main_h-overlay_h-#{margin}"
-                          when 'bottom_right'
-                            "main_w-overlay_w-#{margin}:main_h-overlay_h-#{margin}"
-                          when 'top_left'
-                            "#{margin}:#{margin}"
-                          when 'top_right'
-                            "main_w-overlay_w-#{margin}:#{margin}"
+                        when 'bottom_left'
+                          "#{margin}:main_h-overlay_h-#{margin}"
+                        when 'bottom_right'
+                          "main_w-overlay_w-#{margin}:main_h-overlay_h-#{margin}"
+                        when 'top_left'
+                          "#{margin}:#{margin}"
+                        when 'top_right'
+                          "main_w-overlay_w-#{margin}:#{margin}"
                         end
 
           "-vf \"movie=#{path} [logo]; [in][logo] overlay=#{positioning} [out]\""
@@ -80,7 +80,7 @@ module CarrierWave
             when 'mp4'
               h[:video_codec] = 'libx264'
               h[:audio_codec] = 'libfaac'
-              h[:custom] = '-qscale 0 -preset slow -g 30'
+              h[:custom] = '-preset slow -g 30'
             when 'ogv'
               h[:video_codec] = 'libtheora'
               h[:audio_codec] = 'libvorbis'
